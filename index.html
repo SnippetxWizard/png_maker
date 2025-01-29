@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Snippet to Image</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #1e1e1e;
+            color: white;
+            padding: 20px;
+        }
+        textarea {
+            width: 90%;
+            height: 150px;
+            background: #2d2d2d;
+            color: #ffffff;
+            border: none;
+            padding: 10px;
+            font-size: 16px;
+        }
+        pre {
+            text-align: left;
+            padding: 10px;
+            border-radius: 10px;
+            overflow: auto;
+        }
+        canvas {
+            display: none;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background: #ff9800;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Convert Code Snippet to Image</h1>
+    <textarea id="codeInput" placeholder="Enter your code here..."></textarea>
+    <br>
+    <button onclick="generateImage()">Generate Image</button>
+    <br><br>
+    <pre id="codeOutput" class="language-javascript"><code></code></pre>
+    <canvas id="canvas"></canvas>
+    <a id="downloadLink" style="display: none;" download="code-snippet.png">Download Image</a>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script>
+        function generateImage() {
+            let code = document.getElementById("codeInput").value;
+            let pre = document.getElementById("codeOutput");
+            pre.innerHTML = `<code class="language-javascript">${Prism.highlight(code, Prism.languages.javascript, 'javascript')}</code>`;
+            
+            setTimeout(() => {
+                let canvas = document.getElementById("canvas");
+                let ctx = canvas.getContext("2d");
+                let preElement = document.getElementById("codeOutput");
+                
+                canvas.width = preElement.clientWidth + 20;
+                canvas.height = preElement.clientHeight + 20;
+                
+                ctx.fillStyle = "#2d2d2d";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "16px monospace";
+                let lines = code.split("\n");
+                lines.forEach((line, index) => {
+                    ctx.fillText(line, 10, 20 + index * 20);
+                });
+                
+                let downloadLink = document.getElementById("downloadLink");
+                downloadLink.href = canvas.toDataURL("image/png");
+                downloadLink.style.display = "block";
+                downloadLink.innerText = "Download Snippet";
+            }, 100);
+        }
+    </script>
+</body>
+</html>
